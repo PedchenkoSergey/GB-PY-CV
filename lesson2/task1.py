@@ -12,7 +12,8 @@ class ItemDiscount:
 
 
 class ItemDiscountReport(ItemDiscount):
-    def get_parent_data(self):
+    @staticmethod
+    def get_parent_data():
         print(f"Товар название: '{ItemDiscountReport.name}', цена: {ItemDiscountReport.price}")
 
 
