@@ -5,9 +5,11 @@
 
 """
 
+
 class ItemDiscount:
     name = "A-klasse car"
     price = 11700
+
 
 class ItemDiscountReport(ItemDiscount):
     def get_parent_data(self):
