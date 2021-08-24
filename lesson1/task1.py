@@ -7,20 +7,15 @@
 """
 
 
-def multiple(a: int, b: int) -> str:
-    """
-    Функция выводит таблицу умнгожения А на В
-    :param a:
-    :param b:
-    :return:
-    """
+def multiple(a: int, b: int, ex_lam) -> str:
+
     table = []
     for i in range(1, a + 1):
         table_row = []
         for j in range(1, b + 1):
             table_row.append(str(i * j))
         table.append('\t'.join(table_row))
-    return '\n'.join(table)
+    return ex_lam(table)
 
 
-print(multiple(16, 16))
+print(multiple(16, 16, ex_lam=(lambda s: '\n'.join(s))))
