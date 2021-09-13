@@ -4,6 +4,12 @@ from django.db import models
 
 
 class GoodModel(models.Model):
+    MEASURE_CHOICES = [
+        ('ШТ', 'Шт.'),
+        ('УПАК', 'Упак.'),
+        ('КОР', 'Кор.'),
+    ]
+
     title = models.CharField(
         verbose_name="Название",
         max_length=255
@@ -17,6 +23,11 @@ class GoodModel(models.Model):
     price = models.PositiveIntegerField(
         verbose_name="Цена",
         default=0
+    )
+
+    measure = models.CharField(
+        max_length=4,
+        choices=MEASURE_CHOICES
     )
 
     vendor = models.CharField(
