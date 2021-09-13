@@ -26,7 +26,6 @@ $(function () {
       type: form.attr("method"),
       dataType: 'json',
       success: function (data) {
-        console.log(data)
         if (data.form_is_valid) {
           $("#goodtable tbody").html(data.html_good_list);
           $("#modalgood").modal("hide");
