@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <table class="table" style="width: 50%; margin: 50px">
+  <thead>
+    <tr>
+      <th scope="col">Название</th>
+      <th scope="col">Дата поступления</th>
+      <th scope="col">Цена</th>
+      <th scope="col">Единица измерения</th>
+      <th scope="col">Имя поставщика</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for object in object_list %}
+        <tr>
+          <th scope="col">{{ object.title }}</th>
+          <th scope="col">{{ object.created_date }}</th>
+          <th scope="col">{{ object.price }}</th>
+          <th scope="col">{{ object.measure }}</th>
+          <th scope="col">{{ object.vendor }}</th>
+        </tr>
+    {% endfor %}
+  </tbody>
+</table>
+    <a href="{% url 'mainapp:add-good' %}">
+<button type="button" class="btn btn-danger" style="margin: 0 50px">Добавить товар</button>
+    </a>
+
+{% endblock %}
