@@ -9,10 +9,10 @@ $(function () {
       type: 'get',
       dataType: 'json',
       beforeSend: function () {
-        $("#modal-good").modal("show");
+        $("#modalgood").modal("show");
       },
       success: function (data) {
-        $("#modal-good .modal-content").html(data.html_form);
+        $("#modalgood .modal-content").html(data.html_form);
       }
     });
   };
@@ -26,12 +26,13 @@ $(function () {
       type: form.attr("method"),
       dataType: 'json',
       success: function (data) {
+        console.log(data)
         if (data.form_is_valid) {
-          $("#good-table tbody").html(data.html_good_list);
-          $("#modal-good").modal("hide");
+          $("#goodtable tbody").html(data.html_good_list);
+          $("#modalgood").modal("hide");
         }
         else {
-          $("#modal-good .modal-content").html(data.html_form);
+          $("#modalgood .modal-content").html(data.html_form);
         }
       }
     });

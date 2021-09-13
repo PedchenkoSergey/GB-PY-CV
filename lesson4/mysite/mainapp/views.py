@@ -21,10 +21,9 @@ class ItemsListView(ListView):
 def good_add(request):
     if request.method == "POST":
         form = ProductEditForm(data=request.POST)
-        return save_good_form(request, form, 'mainapp/good_create.html')
     else:
         form = ProductEditForm()
-        return save_good_form(request, form, 'mainapp/good_create.html')
+    return save_good_form(request, form, 'mainapp/good_create.html')
 
 
 def save_good_form(request, form, template_name):
