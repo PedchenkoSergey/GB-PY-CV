@@ -18,8 +18,10 @@ $(function () {
   };
 
 
-  var saveForm = function () {
+  var saveForm = function (evt) {
+    evt.preventDefault()
     var form = $(this);
+    console.log(form)
     $.ajax({
       url: form.attr("action"),
       data: form.serialize(),
@@ -38,10 +40,9 @@ $(function () {
     return false;
   };
 
-
   /* Подключение функций */
 
   $(".js-create-good").click(loadForm);
-  $("#modal-good").on("submit", ".js-good-create-form", saveForm);
+  $("#modalgood").on("submit", ".js-good-create-form", saveForm);
 
 });
