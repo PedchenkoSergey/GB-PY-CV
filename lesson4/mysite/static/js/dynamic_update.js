@@ -19,9 +19,8 @@ $(function () {
 
 
   var saveForm = function (evt) {
-    evt.preventDefault()
+    // evt.preventDefault()
     var form = $(this);
-    console.log(form)
     $.ajax({
       url: form.attr("action"),
       data: form.serialize(),
@@ -29,11 +28,13 @@ $(function () {
       dataType: 'json',
       success: function (data) {
         if (data.form_is_valid) {
+          $(".modal-content").modal("hide");
           $("#goodtable tbody").html(data.html_good_list);
-          $("#modalgood").modal("hide");
+          console.log('test1')
         }
         else {
           $("#modalgood .modal-content").html(data.html_form);
+          console.log('test2')
         }
       }
     });
