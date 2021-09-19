@@ -82,23 +82,12 @@ def dbsqlite_connection(query_table, db_table, name):
     conn = QtSql.QSqlDatabase.addDatabase('QSQLITE')
     conn.setDatabaseName(name)
     if conn.open():
-        # query = QtSql.QSqlQuery()
-        # query.exec(f"select * from {db_table}")
-        # results = []
-        #
-        # if query.isActive():
-        #     query.first()
-        #     while query.isValid():
-        #         results.append(query.value("good_name"))
-        #         query.next()
-        #     for el in results:
-        #         print(el)
 
         query_model = QtSql.QSqlQueryModel(parent=query_table)
         query_model.setQuery(f"select * from {db_table}")
         query_table.setModel(query_model)
 
-        conn.close()
+    conn.close()
 
 
 # Отобразить главное окно
