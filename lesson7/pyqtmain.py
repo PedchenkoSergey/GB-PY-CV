@@ -1,6 +1,10 @@
 import sys
 from functools import partial
 
+from PyQt5.QtSql import QSqlTableModel
+
+from create_db import database_creation
+
 from PyQt5 import QtSql, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QAction, QApplication, QHeaderView, QLabel, QPushButton, QFileDialog, QTextEdit
 
@@ -62,11 +66,17 @@ class CatalogMainWindow(QMainWindow):
         self.deleteButton = QPushButton("Удалить запись", self)
         self.deleteButton.move(20, 450)
         self.deleteButton.resize(300, 50)
+        self.deleteButton.pressed.connect(self.delRecord)
 
         self.submitButton = QPushButton("Добавить запись", self)
         self.submitButton.move(340, 450)
         self.submitButton.resize(300, 50)
         self.submitButton.pressed.connect(self.submit_btn)
+
+        self.actButton = QPushButton("Сохранить", self)
+        self.actButton.move(660, 450)
+        self.actButton.resize(300, 50)
+        self.actButton.pressed.connect(self.actRecord)
 
         self.actions_button_init()
 
@@ -99,17 +109,30 @@ class CatalogMainWindow(QMainWindow):
             self.model_table = QtSql.QSqlTableModel()
             self.model_table.setTable(f"{db_table}")
             self.model_table.select()
+            self.model_table.setEditStrategy(QSqlTableModel.OnFieldChange)
 
             query_table.setModel(self.model_table)
 
         conn.close()
 
     def submit_btn(self):
+        self.addRecord()
+
+    def addRecord(self):
+        self.model_table.insertRow(self.model_table.rowCount())
+
+    def delRecord(self):
+        self.model_table.removeRow(self.qt_sql_table.currentIndex().row())
+        self.model_table.select()
+
+    def actRecord(self):
+        self.model_table.submitAll()
         self.model_table.select()
 
 
 # Отобразить главное окно
 if __name__ == "__main__":
+    database_creation()
     app = QApplication(sys.argv)
     CMW = CatalogMainWindow()
     CMW.setWindowTitle('Складской учет')
