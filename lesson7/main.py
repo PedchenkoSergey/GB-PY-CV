@@ -1,50 +1,68 @@
-import sys
-from PyQt5.QtWidgets import QMainWindow, QAction, QApplication
+import sqlite3
+import os
 
 
-class CatalogMainWindow(QMainWindow):
-    def __init__(self, parent=None):
-        QMainWindow.__init__(self, parent)
+def database_creation():
+    db_path = os.path.join('.', 'dbls6.sqlite')
+    # print(db_path)
+    conn = sqlite3.connect(db_path)
 
-        # Структура главного окна
-        # Создаем меню
-        self.menu_bar = self.menuBar()
+    cursor = conn.cursor()
 
-        # Создаем блоки меню
-        # Блок меню 'Учет движения товаров'
-        self.gma_menu = self.menu_bar.addMenu('Учет движения товаров')
-        self.ao_open_btn = QAction(self)
-        self.ao_open_btn.setText('Категории товаров')
-        self.bo_open_btn = QAction(self)
-        self.bo_open_btn.setText('Единицы измерения товаров')
-        self.co_open_btn = QAction(self)
-        self.co_open_btn.setText('Должности')
-        self.gma_menu.addAction(self.ao_open_btn)
-        self.gma_menu.addAction(self.bo_open_btn)
-        self.gma_menu.addAction(self.co_open_btn)
+    # Create additional tables
+    cursor.executescript("""
+        CREATE TABLE IF NOT EXISTS categories (
+        category_name TEXT NOT NULL,
+        category_description TEXT NOT NULL,
+        PRIMARY KEY (category_name)
+        );
+        
+        CREATE TABLE IF NOT EXISTS units(
+        unit TEXT NOT NULL,
+        PRIMARY KEY (unit)
+        );
+        
+        CREATE TABLE IF NOT EXISTS positions (
+        position TEXT NOT NULL,
+        PRIMARY KEY (position)
+        );
+    """)
 
-        self.do_open_btn = QAction(self)
-        self.do_open_btn.setText('Товары')
-        self.eo_open_btn = QAction(self)
-        self.eo_open_btn.setText('Сотрудники')
-        self.fo_open_btn = QAction(self)
-        self.fo_open_btn.setText('Поставщики')
-        self.gma_menu.addAction(self.do_open_btn)
-        self.gma_menu.addAction(self.eo_open_btn)
-        self.gma_menu.addAction(self.fo_open_btn)
+    conn.commit()
 
-        self.ao_open_btn.triggered.connect(self.button_pressed)
+    # Create main tables:
+    cursor.executescript("""
+        CREATE TABLE IF NOT EXISTS goods (
+        good_id INTEGER NOT NULL,
+        good_name TEXT NOT NULL,
+        good_unit TEXT NOT NULL,
+        good_cat TEXT NOT NULL,
+        PRIMARY KEY (good_id),
+        FOREIGN KEY (good_name) REFERENCES units(unit) ON DELETE CASCADE ON UPDATE CASCADE
+        );
+        
+        CREATE TABLE IF NOT EXISTS employees (
+        employee_id INTEGER NOT NULL,
+        employee_fio TEXT NOT NULL,
+        employee_position TEXT NOT NULL,
+        PRIMARY KEY (employee_id),
+        FOREIGN KEY (employee_position) REFERENCES positions(position) ON DELETE CASCADE ON UPDATE CASCADE 
+        );
+        
+        CREATE TABLE IF NOT EXISTS vendors (
+        vendor_id INTEGER NOT NULL,
+        vendor_name TEXT NOT NULL, 
+        vendor_ownerchipform TEXT NOT NULL, 
+        vendor_address TEXT NOT NULL, 
+        vendor_phone TEXT NOT NULL, 
+        vendor_email TEXT NOT NULL,
+        PRIMARY KEY (vendor_id)
+        );
+    """)
+
+    conn.commit()
+    conn.close()
 
 
-    def button_pressed(self):
-        print(f'button pressed')
-
-
-# Отобразить главное окно
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    CMW = CatalogMainWindow()
-    CMW.setWindowTitle('Складской учет')
-    CMW.setFixedSize(1200, 800)
-    CMW.show()
-    sys.exit(app.exec_())
+    database_creation()
