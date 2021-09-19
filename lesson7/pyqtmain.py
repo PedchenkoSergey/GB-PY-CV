@@ -2,12 +2,14 @@ import sys
 from functools import partial
 
 from PyQt5 import QtSql, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QAction, QApplication
+from PyQt5.QtWidgets import QMainWindow, QAction, QApplication, QHeaderView, QLabel, QPushButton, QFileDialog
 
 
 class CatalogMainWindow(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
+
+        self.DB_NAME = "dbls7.sqlite"
 
         # Структура главного окна
         # Создаем меню
@@ -36,38 +38,67 @@ class CatalogMainWindow(QMainWindow):
         self.gma_menu.addAction(self.eo_open_btn)
         self.gma_menu.addAction(self.fo_open_btn)
 
+        # Table without adding info to ds:
         self.qt_sql_table = QtWidgets.QTableView(self)
 
-        self.ao_open_btn.triggered.connect(self.button_pressed)
-        self.bo_open_btn.triggered.connect(partial(dbsqlite_connection, self.qt_sql_table, 'dbls7.sqlite'))
+        self.qt_sql_table.resize(620, 320)
+        self.qt_sql_table.move(20, 100)
+        self.qt_sql_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
+        self.lbl1 = QLabel(self.DB_NAME, self)
+        self.lbl1.resize(1000, 20)
+        self.lbl1.move(20, 20)
+
+        self.fileButton = QPushButton("Файл базы данных", self)
+        self.fileButton.move(20, 50)
+        self.fileButton.resize(300, 20)
+        self.fileButton.pressed.connect(self.file_btn_pressed)
+
+        self.fileButton = QPushButton("Удалить запись", self)
+        self.fileButton.move(20, 450)
+        self.fileButton.resize(300, 50)
+
+        self.fileButton = QPushButton("Добавить запись", self)
+        self.fileButton.move(340, 450)
+        self.fileButton.resize(300, 50)
+
+        self.actions_button_init()
+
+    def actions_button_init(self):
+        self.ao_open_btn.triggered.connect(partial(dbsqlite_connection, self.qt_sql_table, 'categories', self.DB_NAME))
+        self.bo_open_btn.triggered.connect(partial(dbsqlite_connection, self.qt_sql_table, 'units', self.DB_NAME))
+        self.co_open_btn.triggered.connect(partial(dbsqlite_connection, self.qt_sql_table, 'positions', self.DB_NAME))
+        self.do_open_btn.triggered.connect(partial(dbsqlite_connection, self.qt_sql_table, 'goods', self.DB_NAME))
+        self.eo_open_btn.triggered.connect(partial(dbsqlite_connection, self.qt_sql_table, 'employees', self.DB_NAME))
+        self.fo_open_btn.triggered.connect(partial(dbsqlite_connection, self.qt_sql_table, 'vendors', self.DB_NAME))
+
+    def file_btn_pressed(self):
+        self.DB_NAME = QFileDialog.getOpenFileName(self, 'Open file')[0]
+        self.lbl1.setText(self.DB_NAME)
+        self.actions_button_init()
 
 
-    def button_pressed(self):
-        print(f'button pressed')
-
-
-def dbsqlite_connection(query_table, name='dbls7.sqlite'):
+def dbsqlite_connection(query_table, db_table, name):
     conn = QtSql.QSqlDatabase.addDatabase('QSQLITE')
     conn.setDatabaseName(name)
     if conn.open():
-        query = QtSql.QSqlQuery()
-        query.exec("select * from goods")
-        results = []
+        # query = QtSql.QSqlQuery()
+        # query.exec(f"select * from {db_table}")
+        # results = []
+        #
+        # if query.isActive():
+        #     query.first()
+        #     while query.isValid():
+        #         results.append(query.value("good_name"))
+        #         query.next()
+        #     for el in results:
+        #         print(el)
 
-        if query.isActive():
-            query.first()
-            while query.isValid():
-                results.append(query.value('good_name'))
-                query.next()
-            for el in results:
-                print(el)
+        query_model = QtSql.QSqlQueryModel(parent=query_table)
+        query_model.setQuery(f"select * from {db_table}")
+        query_table.setModel(query_model)
 
-    # query_table = QtWidgets.QTableView()
-    query_model = QtSql.QSqlQueryModel(parent=query_table)
-    query_model.setQuery('select * from goods')
-    query_table.setModel(query_model)
-
-    conn.close()
+        conn.close()
 
 
 # Отобразить главное окно
