@@ -3,7 +3,7 @@ import os
 
 
 def database_creation():
-    db_path = os.path.join('.', 'dbls6.sqlite')
+    db_path = os.path.join('.', 'dbls7.sqlite')
     # print(db_path)
     conn = sqlite3.connect(db_path)
 
@@ -38,7 +38,8 @@ def database_creation():
         good_unit TEXT NOT NULL,
         good_cat TEXT NOT NULL,
         PRIMARY KEY (good_id),
-        FOREIGN KEY (good_name) REFERENCES units(unit) ON DELETE CASCADE ON UPDATE CASCADE
+        FOREIGN KEY (good_unit) REFERENCES units(unit) ON DELETE CASCADE ON UPDATE CASCADE,
+        FOREIGN KEY (good_cat) REFERENCES categories(category_name) ON DELETE CASCADE ON UPDATE CASCADE
         );
         
         CREATE TABLE IF NOT EXISTS employees (

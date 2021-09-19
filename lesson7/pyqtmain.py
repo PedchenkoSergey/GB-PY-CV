@@ -1,4 +1,7 @@
 import sys
+from functools import partial
+
+from PyQt5 import QtSql, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QAction, QApplication
 
 
@@ -33,11 +36,38 @@ class CatalogMainWindow(QMainWindow):
         self.gma_menu.addAction(self.eo_open_btn)
         self.gma_menu.addAction(self.fo_open_btn)
 
+        self.qt_sql_table = QtWidgets.QTableView(self)
+
         self.ao_open_btn.triggered.connect(self.button_pressed)
+        self.bo_open_btn.triggered.connect(partial(dbsqlite_connection, self.qt_sql_table, 'dbls7.sqlite'))
 
 
     def button_pressed(self):
         print(f'button pressed')
+
+
+def dbsqlite_connection(query_table, name='dbls7.sqlite'):
+    conn = QtSql.QSqlDatabase.addDatabase('QSQLITE')
+    conn.setDatabaseName(name)
+    if conn.open():
+        query = QtSql.QSqlQuery()
+        query.exec("select * from goods")
+        results = []
+
+        if query.isActive():
+            query.first()
+            while query.isValid():
+                results.append(query.value('good_name'))
+                query.next()
+            for el in results:
+                print(el)
+
+    # query_table = QtWidgets.QTableView()
+    query_model = QtSql.QSqlQueryModel(parent=query_table)
+    query_model.setQuery('select * from goods')
+    query_table.setModel(query_model)
+
+    conn.close()
 
 
 # Отобразить главное окно
