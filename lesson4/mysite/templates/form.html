@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="form-row">
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label class="small mb-1" for="{{ form.title.id_for_label }}">Название</label>
+                {{ form.title }}
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label class="small mb-1" for="{{ form.image.id_for_label }}">Цена</label>
+                {{ form.price }}
+            </div>
+        </div>
+    </div>
+    <div class="form-row mb-2">
+    </div>
+    <div class="form-row">
+        <div class="col-lg-6">
+            <label class="small mb-1" for="{{ form.measure.id_for_label }}">Измерение</label>
+            {{ form.measure }}
+        </div>
+        <div class="col-lg-6">
+            <label class="small mb-1" for="{{ form.vendor.id_for_label }}">Поставщик</label>
+            {{ form.vendor }}
+        </div>
+    </div>
+
+{% endblock %}
